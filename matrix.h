@@ -1,6 +1,8 @@
 #ifndef MATRIX_H
 #define MATRIX_H
 
+#define PI 3.14159265
+
 struct matrix {
   double **m;
   int rows, cols;
