@@ -65,5 +65,56 @@ void parse_file ( char * filename,
   while ( fgets(line, 255, f) != NULL ) {
     line[strlen(line)-1]='\0';
     printf(":%s:\n",line);
+
+    //HERE COMES THE FUNCTIONALLITY
+    if( strcmp(line,"line") == 0){
+      fgets(line, 255, f);
+      line[strlen(line)-1]='\0';
+
+      int x0, y0, z0, x1, y1, z1;
+      char * hold;
+      hold = strtok(line, " ");
+      //printf(":%s:\n",hold);
+      x0=atoi(hold);
+
+      hold = strtok(NULL, " ");
+      //printf(":%s:\n",hold);
+      y0=atoi(hold);
+
+      hold = strtok(NULL, " ");
+      //printf(":%s:\n",hold);
+      z0=atoi(hold);
+      
+      hold = strtok(NULL, " ");
+      //printf(":%s:\n",hold);
+      x1=atoi(hold);
+      
+      //printf(":%s:\n",strtok(NULL, " "));
+      hold = strtok(NULL, " ");
+      //printf(":%s:\n",hold);
+      y1=atoi(hold);
+      
+      hold = strtok(NULL, " ");
+      //printf(":%s:\n",hold);
+      z1=atoi(hold);
+      
+      add_edge(edges,x0,y0,z0,x1,y1,z1);
+    }
+
+    print_matrix(edges);
+
+    //
+    color c;
+    clear_screen(s); 
+    c.red = MAX_COLOR;
+    c.green = MAX_COLOR;
+    c.blue = MAX_COLOR;
+
+
+    draw_lines(edges, s, c);
+
+    display(s);
+
+    //
   }
 }
