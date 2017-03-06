@@ -3,6 +3,7 @@
 #include <string.h>
 #include <math.h>
 
+
 #include "ml6.h"
 #include "display.h"
 #include "draw.h"
@@ -61,6 +62,12 @@ void parse_file ( char * filename,
     f = stdin;
   else
     f = fopen(filename, "r");
+
+  color c;
+  //clear_screen(s); 
+  c.red = MAX_COLOR;
+  c.green = MAX_COLOR;
+  c.blue = MAX_COLOR;
   
   while ( fgets(line, 255, f) != NULL ) {
     line[strlen(line)-1]='\0';
@@ -68,19 +75,16 @@ void parse_file ( char * filename,
 
     //HERE COMES THE FUNCTIONALLITY
 
-
+    //line
     if( strcmp(line,"line") == 0){
       fgets(line, 255, f);
       line[strlen(line)-1]='\0';
 
       char * hold;
       hold = strdup(line);
-
       char * holder;
       holder = NULL;
-
       char * commands[256];
-
       int i=0;
       while( (holder = strsep(&hold, " ")) != NULL){
 	commands[i] = strdup(holder);
@@ -89,59 +93,126 @@ void parse_file ( char * filename,
       
       add_edge(edges, atoi(commands[0]), atoi(commands[1]), atoi(commands[2]),
 	       atoi(commands[3]), atoi(commands[4]), atoi(commands[5]));
-
-
-    /*
-    if( strcmp(line,"line") == 0){
-      fgets(line, 255, f);
-      line[strlen(line)-1]='\0';
-
-      int x0, y0, z0, x1, y1, z1;
-      char * hold;
-      hold = strtok(line, " ");
-      //printf(":%s:\n",hold);
-      x0=atoi(hold);
-
-      hold = strtok(NULL, " ");
-      //printf(":%s:\n",hold);
-      y0=atoi(hold);
-
-      hold = strtok(NULL, " ");
-      //printf(":%s:\n",hold);
-      z0=atoi(hold);
-      
-      hold = strtok(NULL, " ");
-      //printf(":%s:\n",hold);
-      x1=atoi(hold);
-      
-      //printf(":%s:\n",strtok(NULL, " "));
-      hold = strtok(NULL, " ");
-      //printf(":%s:\n",hold);
-      y1=atoi(hold);
-      
-      hold = strtok(NULL, " ");
-      //printf(":%s:\n",hold);
-      z1=atoi(hold);
-      
-      add_edge(edges,x0,y0,z0,x1,y1,z1);
-    */
     }
 
-    print_matrix(edges);
+    //ident
+    if( strcmp(line,"ident") == 0){
+      ident(transform);
+    }
+    
+    //scale
+    if( strcmp(line,"scale") == 0){
+      fgets(line, 255, f);
+      line[strlen(line)-1]='\0';
+      
+      char * hold;
+      hold = strdup(line);
+      char * holder;
+      holder = NULL;
+      char * commands[256];
+      int i=0;
+      while( (holder = strsep(&hold, " ")) != NULL){
+	commands[i] = strdup(holder);
+	i++;
+      }
+      
+      struct matrix * h_matrix;
+      h_matrix = new_matrix(4,4);
+      h_matrix = make_scale(atoi(commands[0]), atoi(commands[1]), atoi(commands[2]));
+      matrix_mult(h_matrix, transform); 
+    }
 
-    //TO BE REMOVED
-    //
-    color c;
-    clear_screen(s); 
-    c.red = MAX_COLOR;
-    c.green = MAX_COLOR;
-    c.blue = MAX_COLOR;
 
 
-    draw_lines(edges, s, c);
+    //move
+    if( strcmp(line,"move") == 0){
+      fgets(line, 255, f);
+      line[strlen(line)-1]='\0';
+      
+      char * hold;
+      hold = strdup(line);
+      char * holder;
+      holder = NULL;
+      char * commands[256];
+      int i=0;
+      while( (holder = strsep(&hold, " ")) != NULL){
+	commands[i] = strdup(holder);
+	i++;
+      }
+      
+      struct matrix * h_matrix;
+      h_matrix = new_matrix(4,4);
+      h_matrix = make_translate(atoi(commands[0]), atoi(commands[1]), atoi(commands[2]));
+      matrix_mult(h_matrix, transform); 
+    }
 
-    display(s);
+    //rotate
+    if( strcmp(line,"rotate") == 0){
+      fgets(line, 255, f);
+      line[strlen(line)-1]='\0';
+      
+      char * hold;
+      hold = strdup(line);
+      char * holder;
+      holder = NULL;
+      char * commands[256];
+      int i=0;
+      while( (holder = strsep(&hold, " ")) != NULL){
+	commands[i] = strdup(holder);
+	i++;
+      }
 
-    //
+      struct matrix * h_matrix;
+      h_matrix = new_matrix(4,4);
+      
+      if(strcmp(commands[0], "z") == 0){
+	h_matrix = make_rotZ(atoi(commands[1]));
+      }
+      if(strcmp(commands[0], "y") == 0){
+	h_matrix = make_rotY(atoi(commands[1]));
+      }
+      if(strcmp(commands[0], "x") == 0){
+	h_matrix = make_rotX(atoi(commands[1]));
+      }
+      
+      matrix_mult(h_matrix, transform); 
+    }
+
+    //apply
+    if( strcmp(line,"apply") == 0){
+      matrix_mult(transform, edges); 
+    }
+
+    //display
+    if( strcmp(line,"display") == 0){
+      draw_lines(edges, s, c);
+      display(s);
+      clear_screen(s);
+    }
+    
+    //save
+    if( strcmp(line,"save") == 0){
+      fgets(line, 255, f);
+      line[strlen(line)-1]='\0';
+      
+      char * hold;
+      hold = strdup(line);
+      char * holder;
+      holder = NULL;
+      char * commands[256];
+      int i=0;
+      while( (holder = strsep(&hold, " ")) != NULL){
+	commands[i] = strdup(holder);
+	i++;
+      }
+      
+      save_extension(s, commands[0]);
+    }
+
+    //quit
+    if( strcmp(line,"quit") == 0){
+      exit(0);
+    }
+
   }
 }
