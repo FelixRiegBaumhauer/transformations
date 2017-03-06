@@ -67,6 +67,31 @@ void parse_file ( char * filename,
     printf(":%s:\n",line);
 
     //HERE COMES THE FUNCTIONALLITY
+
+
+    if( strcmp(line,"line") == 0){
+      fgets(line, 255, f);
+      line[strlen(line)-1]='\0';
+
+      char * hold;
+      hold = strdup(line);
+
+      char * holder;
+      holder = NULL;
+
+      char * commands[256];
+
+      int i=0;
+      while( (holder = strsep(&hold, " ")) != NULL){
+	commands[i] = strdup(holder);
+	i++;
+      }
+      
+      add_edge(edges, atoi(commands[0]), atoi(commands[1]), atoi(commands[2]),
+	       atoi(commands[3]), atoi(commands[4]), atoi(commands[5]));
+
+
+    /*
     if( strcmp(line,"line") == 0){
       fgets(line, 255, f);
       line[strlen(line)-1]='\0';
@@ -99,10 +124,12 @@ void parse_file ( char * filename,
       z1=atoi(hold);
       
       add_edge(edges,x0,y0,z0,x1,y1,z1);
+    */
     }
 
     print_matrix(edges);
 
+    //TO BE REMOVED
     //
     color c;
     clear_screen(s); 
