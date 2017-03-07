@@ -185,9 +185,10 @@ void parse_file ( char * filename,
 
     //display
     if( strcmp(line,"display") == 0){
+      clear_screen(s);
       draw_lines(edges, s, c);
       display(s);
-      clear_screen(s);
+      //clear_screen(s);
     }
     
     //save
@@ -205,12 +206,13 @@ void parse_file ( char * filename,
 	commands[i] = strdup(holder);
 	i++;
       }
-      
+      printf(":%s:\n", commands[0]);
       save_extension(s, commands[0]);
     }
 
     //quit
     if( strcmp(line,"quit") == 0){
+      printf("exiting\n");
       exit(0);
     }
 
