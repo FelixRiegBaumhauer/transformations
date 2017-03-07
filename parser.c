@@ -71,7 +71,7 @@ void parse_file ( char * filename,
   
   while ( fgets(line, 255, f) != NULL ) {
     line[strlen(line)-1]='\0';
-    printf(":%s:\n",line);
+    //printf(":%s:\n",line);
 
     //HERE COMES THE FUNCTIONALLITY
 
@@ -206,15 +206,17 @@ void parse_file ( char * filename,
 	commands[i] = strdup(holder);
 	i++;
       }
-      printf(":%s:\n", commands[0]);
+      //printf(":%s:\n", commands[0]);
       save_extension(s, commands[0]);
     }
 
     //quit
     if( strcmp(line,"quit") == 0){
       printf("exiting\n");
-      exit(0);
+      break;
+      //exit(0);
     }
 
   }
+  return;
 }
